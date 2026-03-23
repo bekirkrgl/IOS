@@ -12,7 +12,7 @@ Cenaze sonrası bu hafta projeye hızlıca giriş yaptım.
 * Ana ekran tasarımını bitirdim; bakiye kartı ve harcama listesi (FlatList) şu an görsel olarak hazır. 
 * Gelir ve giderlerin renklerini (yeşil/kırmızı) ayırarak kullanıcı dostu bir yapı kurdum.
 
-**Yapay Zeka Notu:** Hocam tasarım detaylarında ve hata çözümlerinde yapay zeka desteği aldım ancak her satır kodun mantığını kavrayarak ilerliyorum.
+**Not:** Hocam tasarım detaylarında ve hata çözümlerinde yapay zeka desteği aldım ancak her satır kodun mantığını kavrayarak ilerliyorum.
 
 **İlerleme Videom (YouTube):**
 👉 [https://www.youtube.com/watch?v=_fmV8uxt_Ec]
