@@ -1,14 +1,16 @@
-# CepteNeVar - Haftalık İlerleme Raporları
+# CepteNeVar - Akıllı Bütçe Takip Uygulaması
 
-## Hafta 4: Proje Kurulumu ve Arayüz Tasarımı
+Bu proje, iOS II dersi kapsamında geliştirilen, kullanıcıların gelir ve giderlerini anlık olarak takip edebilmelerini sağlayan bir React Native mobil uygulamasıdır.
 
-Hocam merhabalar, bu hafta projemizin kodlama aşamasına başladım. 
+## 📺 Proje İlerleme Videoları
+Tüm haftalık ilerleme videolarıma aşağıdaki YouTube oynatma listesi üzerinden ulaşabilirsiniz:
+👉 [https://studio.youtube.com/playlist/PLf72hb1GByQ91n0-dX-0OBjcZY8pNkMMu/edit]
 
-Araştırmalarımdan sonra bu hafta projemi Expo ile bilgisayarıma kurdum ve telefonuma bağladım. Kurulum aşamasında terminalde ufak tefek yollar (path) ve git hataları aldım ama araştırarak çözdüm.
+## 📝 Haftalık İlerleme Raporları
+Projenin hafta hafta gelişim detaylarına, teknik açıklamalara ve haftalık özel video linklerine aşağıdaki dosyadan ulaşabilirsiniz:
+👉 [Haftalık İlerleme Raporları Dosyası İçin Tıklayın](./Haftalik_Raporlar.md)
 
-Şu an projenin iskeletini ayağa kaldırdım. Henüz veritabanı (AsyncStorage) kısmına geçmediğim için arayüzde nasıl durduğunu görmek adına kodun içine "harcamalar" isminde sahte bir liste oluşturdum. 
-Tasarımı yaparken View, Text ve FlatList gibi temel React Native bileşenlerini kullandım. Gelirleri yeşil, giderleri kırmızı yapacak ufak bir mantık ekledim. Sağ alt köşeye de haftaya fonksiyonlarını yazacağım ekleme penceresi için bir buton koydum.
-
-Uygulamanın arayüzü telefonda sorunsuz çalışıyor. Yapay zekadan kod tamamlama konusunda destek aldım ama yazdığım kodların ne işe yaradığına hakimim.
-
-**Bu haftaki ilerlememi anlattığım videomun linki:** 👉 [https://www.youtube.com/watch?v=_fmV8uxt_Ec&list=PLf72hb1GByQ91n0-dX-0OBjcZY8pNkMMu]
+## Kullanılan Teknolojiler
+* React Native (Expo)
+* JavaScript / TypeScript
+* Yapay Zeka Destekli Geliştirme (Antigravity)
