@@ -17,4 +17,16 @@ Cenaze sonrası bu hafta projeye hızlıca giriş yaptım.
 **İlerleme Videom (YouTube):**
 👉 [https://www.youtube.com/watch?v=_fmV8uxt_Ec]
 
+## 5. Hafta: Yeşil butonu calıstırmak
+Hocam merhabalar, bu hafta uygulamayı sadece statik bir tasarım olmaktan çıkarıp, kullanıcıyla etkileşime giren canlı bir yapıya bürüdüm.
+
+* Sağ alttaki yeşil artı butonuna işlev kazandırarak, basıldığında aşağıdan kayarak açılan şık bir Modal (pencere) yapısı kurdum.
+* Kullanıcının harcama başlığı ve tutarı girebilmesi için `TextInput` bileşenlerini entegre ettim. Tutar kısmında klavyenin sadece rakamlarla açılmasını ayarladım.
+* İşlemin "Gelir" mi yoksa "Gider" mi olduğunu seçebileceğimiz butonlar ekledim. Seçime göre kırmızı/yeşil renk alıyorlar.
+* En önemli kısım olarak, `useState` hook'unu kullanarak "Kaydet" dediğimiz anda girdiğimiz verinin ana ekrandaki listeye anında eklenmesini sağladım.
+* Klavye açıldığında giriş alanlarının altta kalmaması için  `KeyboardAvoidingView` yapısını öğrenip kullandım.
+
+**İlerleme Videom (YouTube):**
+👉 [https://youtu.be/5jzyjYi_ZeM]
+
 ---
