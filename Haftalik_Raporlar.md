@@ -30,3 +30,16 @@ Hocam merhabalar, bu hafta uygulamayı sadece statik bir tasarım olmaktan çık
 👉 [https://youtu.be/5jzyjYi_ZeM]
 
 ---
+## 6. Hafta: Veri Kalıcılığı (AsyncStorage) ve Dinamik Bakiye
+Hocam selamlar, bu hafta projenin en kritik aşamalarından birini tamamladım ve uygulamaya "hafıza" yeteneği kazandırdım. Artık verilerimiz kaybolup gitmiyor , kaydediliyor.
+
+* Projeye `@react-native-async-storage/async-storage` kütüphanesini kurdum.
+* **Veri Kaydetme:** Kullanıcı yeni işlem eklediğinde, harcama listesini `JSON.stringify` ile string formatına çevirip telefonun yerel hafızasına yazdıran bir yapı kurdum.
+* **Veri Okuma:** Uygulama ilk açıldığında `useEffect` hook'u sayesinde hafızadaki veriler kontrol ediliyor, varsa `JSON.parse` ile tekrar diziye çevrilip ekrana basılıyor. (Uygulama kapatılıp açılsa bile veriler korunuyor).
+* **Bonus (Dinamik Bakiye):** Üst kısımdaki bakiye kartını sabit olmaktan çıkardım. Listeye gelir/gider eklendikçe `useEffect` yardımıyla toplam bakiyeyi otomatik hesaplayan bir fonksiyon (`bakiyeHesapla`) ekledim.
+
+
+**İlerleme Videom (YouTube):**
+👉 [https://youtu.be/_V9J_HBMnQQ]
+
+---
