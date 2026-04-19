@@ -29,7 +29,7 @@ Hocam merhabalar, bu hafta uygulamayı sadece statik bir tasarım olmaktan çık
 **İlerleme Videom (YouTube):**
 👉 [https://youtu.be/5jzyjYi_ZeM]
 
----
+
 ## 6. Hafta: Veri Kalıcılığı (AsyncStorage) ve Dinamik Bakiye
 Hocam selamlar, bu hafta projenin en kritik aşamalarından birini tamamladım ve uygulamaya "hafıza" yeteneği kazandırdım. Artık verilerimiz kaybolup gitmiyor , kaydediliyor.
 
@@ -42,4 +42,22 @@ Hocam selamlar, bu hafta projenin en kritik aşamalarından birini tamamladım v
 **İlerleme Videom (YouTube):**
 👉 [https://youtu.be/_V9J_HBMnQQ]
 
+## 7. Hafta: Akademik Ara (Vize Haftası)
+Hocam selamlar, bu hafta üniversitemizdeki vize sınavları nedeniyle projeye teknik bir ekleme yapamadım. Ağırlıklı olarak sınavlara odaklandığım için 7. haftayı pas geçmek durumunda kaldım.
+
 ---
+
+## 8. Hafta: Veri Silme ve Gelişmiş Özet İstatistikleri (Fark Kapatma)
+Vizelerin ardından projeye hızlı bir dönüş yaptım. Geçen hafta kaybettiğim zamanı telafi etmek amacıyla bu hafta uygulamaya **iki önemli özellik** birden ekledim.
+
+**1. Veri Silme (Delete) Özelliği:**
+* Listelerdeki elemanlara "basılı tutma" (Long Press) yeteneği kazandırdım. Kullanıcı harcamanın üzerine basılı tuttuğunda `Alert` bileşeni ile güvenli bir onay penceresi çıkıyor.
+* Silinen veri `filter` metodu ile diziden çıkarılıyor ve anında `AsyncStorage` ile telefon hafızasından da kalıcı olarak siliniyor.
+
+**2. Gelişmiş Özet İstatistikleri:**
+* Sadece ana bakiyeyi göstermenin yetersiz olduğunu fark ettim. Ana bakiyenin altına **"Toplam Gelir"** ve **"Toplam Gider"** detaylarını ayrı ayrı gösteren iki yeni istatistik kartı tasarladım.
+* `bakiyeHesapla` fonksiyonunu güncelleyerek, listedeki verileri tipine göre ayrıştırıp bu iki karta dinamik olarak yansıtmasını sağladım. Hem ekleme hem silme anında tüm istatistikler eşzamanlı olarak güncelleniyor.
+
+**İlerleme Videom (YouTube):**
+👉 [https://youtu.be/XyHRfoj5A-8]
+
