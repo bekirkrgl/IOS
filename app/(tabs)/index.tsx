@@ -12,9 +12,14 @@ interface Harcama {
 export default function HomeScreen() {
   const [harcamalar, setHarcamalar] = useState<Harcama[]>([]);
   const [modalGorunur, setModalGorunur] = useState(false);
+
+  // Input State'leri
   const [yeniBaslik, setYeniBaslik] = useState('');
   const [yeniTutar, setYeniTutar] = useState('');
   const [yeniTip, setYeniTip] = useState('gider');
+
+  // Düzenleme Takibi için State
+  const [duzenlenenId, setDuzenlenenId] = useState<string | null>(null);
 
   const [guncelBakiye, setGuncelBakiye] = useState(0);
   const [toplamGelir, setToplamGelir] = useState(0);
@@ -49,63 +54,101 @@ export default function HomeScreen() {
   };
 
   const bakiyeHesapla = () => {
-    let bakiye = 0;
-    let gelir = 0;
-    let gider = 0;
-
+    let bakiye = 0; let gelir = 0; let gider = 0;
     harcamalar.forEach(islem => {
       const miktar = parseFloat(islem.tutar);
-      if (islem.tip === 'gelir') {
-        bakiye += miktar;
-        gelir += miktar;
-      } else {
-        bakiye -= miktar;
-        gider += miktar;
-      }
+      if (islem.tip === 'gelir') { bakiye += miktar; gelir += miktar; }
+      else { bakiye -= miktar; gider += miktar; }
     });
-
     setGuncelBakiye(bakiye);
     setToplamGelir(gelir);
     setToplamGider(gider);
   };
 
-  const harcamaEkle = () => {
-    if (yeniBaslik.trim() === '' || yeniTutar.trim() === '') return;
-    const yeniIslem: Harcama = {
-      id: Math.random().toString(),
-      baslik: yeniBaslik,
-      tutar: yeniTutar,
-      tip: yeniTip
-    };
-    const yeniHarcamaListesi = [yeniIslem, ...harcamalar];
-    setHarcamalar(yeniHarcamaListesi);
-    verileriKaydet(yeniHarcamaListesi);
+  // Düzenleme Modunu Başlatan Fonksiyon
+  const duzenleBaslat = (item: Harcama) => {
+    setDuzenlenenId(item.id);
+    setYeniBaslik(item.baslik);
+    setYeniTutar(item.tutar);
+    setYeniTip(item.tip);
+    setModalGorunur(true);
+  };
+
+  // Kaydetme Fonksiyonu (Hem Ekleme Hem Güncelleme Yapar)
+  const islemKaydet = () => {
+    // Validasyonlar
+    if (yeniBaslik.trim() === '' || yeniTutar.trim() === '') {
+      Alert.alert("Eksik Bilgi", "Lütfen tüm alanları doldurun.");
+      return;
+    }
+    const sayisalTutar = parseFloat(yeniTutar.replace(',', '.'));
+    if (isNaN(sayisalTutar) || sayisalTutar <= 0) {
+      Alert.alert("Hatalı Tutar", "Geçerli bir rakam girin.");
+      return;
+    }
+
+    if (duzenlenenId) {
+      // GÜNCELLEME MANTIĞI (Update)
+      const guncellenmisListe = harcamalar.map(item =>
+        item.id === duzenlenenId
+          ? { ...item, baslik: yeniBaslik, tutar: sayisalTutar.toString(), tip: yeniTip }
+          : item
+      );
+      setHarcamalar(guncellenmisListe);
+      verileriKaydet(guncellenmisListe);
+    } else {
+      // YENİ EKLEME MANTIĞI (Create)
+      const yeniIslem: Harcama = {
+        id: Math.random().toString(),
+        baslik: yeniBaslik,
+        tutar: sayisalTutar.toString(),
+        tip: yeniTip
+      };
+      const yeniListe = [yeniIslem, ...harcamalar];
+      setHarcamalar(yeniListe);
+      verileriKaydet(yeniListe);
+    }
+
+    formuTemizle();
+  };
+
+  const formuTemizle = () => {
     setYeniBaslik('');
     setYeniTutar('');
+    setYeniTip('gider');
+    setDuzenlenenId(null);
     setModalGorunur(false);
   };
 
-  const harcamaSilOnay = (id: string) => {
+  const islemSecenekleri = (item: Harcama) => {
     Alert.alert(
-      "İşlemi Sil",
-      "Bu harcamayı silmek istediğinizden emin misiniz?",
+      "İşlem Seçin",
+      `"${item.baslik}" kaydı için ne yapmak istersiniz?`,
       [
-        { text: "Vazgeç", style: "cancel" },
-        { text: "Sil", style: "destructive", onPress: () => harcamaSil(id) }
+        { text: "Düzenle", onPress: () => duzenleBaslat(item) },
+        { text: "Sil", style: "destructive", onPress: () => silmeOnayi(item.id) },
+        { text: "Vazgeç", style: "cancel" }
       ]
     );
   };
 
-  const harcamaSil = (id: string) => {
-    const yeniListe = harcamalar.filter(item => item.id !== id);
-    setHarcamalar(yeniListe);
-    verileriKaydet(yeniListe);
+  const silmeOnayi = (id: string) => {
+    Alert.alert("Emin misiniz?", "Bu işlem kalıcı olarak silinecektir.", [
+      { text: "İptal", style: "cancel" },
+      {
+        text: "Evet, Sil", style: "destructive", onPress: () => {
+          const yeniListe = harcamalar.filter(item => item.id !== id);
+          setHarcamalar(yeniListe);
+          verileriKaydet(yeniListe);
+        }
+      }
+    ]);
   };
 
   const renderItem = ({ item }: { item: Harcama }) => (
     <TouchableOpacity
       style={styles.harcamaKarti}
-      onLongPress={() => harcamaSilOnay(item.id)}
+      onLongPress={() => islemSecenekleri(item)}
       activeOpacity={0.7}
     >
       <Text style={styles.harcamaBaslik}>{item.baslik}</Text>
@@ -117,15 +160,11 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-
       <View style={styles.bakiyeKarti}>
         <Text style={styles.bakiyeBaslik}>Güncel Bakiye</Text>
-        <Text style={[styles.bakiyeMiktar, { color: guncelBakiye >= 0 ? '#4cd137' : '#e74c3c' }]}>
-          {guncelBakiye} ₺
-        </Text>
+        <Text style={[styles.bakiyeMiktar, { color: guncelBakiye >= 0 ? '#4cd137' : '#e74c3c' }]}>{guncelBakiye} ₺</Text>
       </View>
 
-      {/* YENİ EKLENEN ÖZET KARTLARI */}
       <View style={styles.ozetAlani}>
         <View style={[styles.ozetKarti, { borderBottomColor: '#27ae60', borderBottomWidth: 3 }]}>
           <Text style={styles.ozetBaslik}>Toplam Gelir</Text>
@@ -138,14 +177,8 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.listeAlani}>
-        <Text style={styles.listeBaslik}>Son İşlemler (Silmek için basılı tutun)</Text>
-        <FlatList
-          data={harcamalar}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<Text style={styles.bosListeYazisi}>Henüz bir işlem eklenmedi.</Text>}
-        />
+        <Text style={styles.listeBaslik}>Son İşlemler (Düzenlemek/Silmek için basılı tutun)</Text>
+        <FlatList data={harcamalar} renderItem={renderItem} keyExtractor={item => item.id} ListEmptyComponent={<Text style={styles.bosListeYazisi}>Henüz bir işlem yok.</Text>} />
       </View>
 
       <TouchableOpacity style={styles.eklemeButonu} onPress={() => setModalGorunur(true)}>
@@ -155,7 +188,7 @@ export default function HomeScreen() {
       <Modal animationType="slide" transparent={true} visible={modalGorunur}>
         <View style={styles.modalArkaplan}>
           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.modalKutu}>
-            <Text style={styles.modalBaslik}>Yeni İşlem Ekle</Text>
+            <Text style={styles.modalBaslik}>{duzenlenenId ? "İşlemi Düzenle" : "Yeni İşlem Ekle"}</Text>
             <TextInput style={styles.input} placeholder="Başlık" value={yeniBaslik} onChangeText={setYeniBaslik} />
             <TextInput style={styles.input} placeholder="Tutar" keyboardType="numeric" value={yeniTutar} onChangeText={setYeniTutar} />
             <View style={styles.tipSecimAlani}>
@@ -167,11 +200,11 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
             <View style={styles.modalAksiyonAlani}>
-              <TouchableOpacity style={[styles.aksiyonButonu, styles.iptalButonu]} onPress={() => setModalGorunur(false)}>
-                <Text style={styles.aksiyonButonuText}>İptal</Text>
+              <TouchableOpacity style={[styles.aksiyonButonu, styles.iptalButonu]} onPress={formuTemizle}>
+                <Text style={styles.aksiyonButonuText}>Vazgeç</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.aksiyonButonu, styles.kaydetButonu]} onPress={harcamaEkle}>
-                <Text style={styles.aksiyonButonuText}>Kaydet</Text>
+              <TouchableOpacity style={[styles.aksiyonButonu, styles.kaydetButonu]} onPress={islemKaydet}>
+                <Text style={styles.aksiyonButonuText}>{duzenlenenId ? "Güncelle" : "Kaydet"}</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -186,13 +219,10 @@ const styles = StyleSheet.create({
   bakiyeKarti: { backgroundColor: '#2f3640', marginHorizontal: 20, marginTop: 10, marginBottom: 15, padding: 25, borderRadius: 15, alignItems: 'center', elevation: 5 },
   bakiyeBaslik: { color: '#dcdde1', fontSize: 14, marginBottom: 5 },
   bakiyeMiktar: { fontSize: 32, fontWeight: 'bold' },
-
-  /* Yeni Özet Alanı Stilleri */
   ozetAlani: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 20 },
   ozetKarti: { backgroundColor: '#fff', flex: 1, padding: 15, borderRadius: 10, marginHorizontal: 5, alignItems: 'center', elevation: 2 },
   ozetBaslik: { fontSize: 12, color: '#7f8c8d', marginBottom: 5, fontWeight: 'bold' },
   ozetMiktar: { fontSize: 16, fontWeight: 'bold' },
-
   listeAlani: { flex: 1, paddingHorizontal: 20 },
   listeBaslik: { fontSize: 14, fontWeight: 'bold', color: '#2f3640', marginBottom: 15 },
   harcamaKarti: { backgroundColor: '#fff', padding: 20, borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, elevation: 3 },
