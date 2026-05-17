@@ -13,13 +13,12 @@ export default function HomeScreen() {
   const [harcamalar, setHarcamalar] = useState<Harcama[]>([]);
   const [modalGorunur, setModalGorunur] = useState(false);
 
-  // Input State'leri
   const [yeniBaslik, setYeniBaslik] = useState('');
   const [yeniTutar, setYeniTutar] = useState('');
   const [yeniTip, setYeniTip] = useState('gider');
-
-  // Düzenleme Takibi için State
   const [duzenlenenId, setDuzenlenenId] = useState<string | null>(null);
+
+  const [aktifFiltre, setAktifFiltre] = useState('hepsi');
 
   const [guncelBakiye, setGuncelBakiye] = useState(0);
   const [toplamGelir, setToplamGelir] = useState(0);
@@ -65,7 +64,6 @@ export default function HomeScreen() {
     setToplamGider(gider);
   };
 
-  // Düzenleme Modunu Başlatan Fonksiyon
   const duzenleBaslat = (item: Harcama) => {
     setDuzenlenenId(item.id);
     setYeniBaslik(item.baslik);
@@ -74,9 +72,7 @@ export default function HomeScreen() {
     setModalGorunur(true);
   };
 
-  // Kaydetme Fonksiyonu (Hem Ekleme Hem Güncelleme Yapar)
   const islemKaydet = () => {
-    // Validasyonlar
     if (yeniBaslik.trim() === '' || yeniTutar.trim() === '') {
       Alert.alert("Eksik Bilgi", "Lütfen tüm alanları doldurun.");
       return;
@@ -88,48 +84,30 @@ export default function HomeScreen() {
     }
 
     if (duzenlenenId) {
-      // GÜNCELLEME MANTIĞI (Update)
       const guncellenmisListe = harcamalar.map(item =>
-        item.id === duzenlenenId
-          ? { ...item, baslik: yeniBaslik, tutar: sayisalTutar.toString(), tip: yeniTip }
-          : item
+        item.id === duzenlenenId ? { ...item, baslik: yeniBaslik, tutar: sayisalTutar.toString(), tip: yeniTip } : item
       );
       setHarcamalar(guncellenmisListe);
       verileriKaydet(guncellenmisListe);
     } else {
-      // YENİ EKLEME MANTIĞI (Create)
-      const yeniIslem: Harcama = {
-        id: Math.random().toString(),
-        baslik: yeniBaslik,
-        tutar: sayisalTutar.toString(),
-        tip: yeniTip
-      };
+      const yeniIslem: Harcama = { id: Math.random().toString(), baslik: yeniBaslik, tutar: sayisalTutar.toString(), tip: yeniTip };
       const yeniListe = [yeniIslem, ...harcamalar];
       setHarcamalar(yeniListe);
       verileriKaydet(yeniListe);
     }
-
     formuTemizle();
   };
 
   const formuTemizle = () => {
-    setYeniBaslik('');
-    setYeniTutar('');
-    setYeniTip('gider');
-    setDuzenlenenId(null);
-    setModalGorunur(false);
+    setYeniBaslik(''); setYeniTutar(''); setYeniTip('gider'); setDuzenlenenId(null); setModalGorunur(false);
   };
 
   const islemSecenekleri = (item: Harcama) => {
-    Alert.alert(
-      "İşlem Seçin",
-      `"${item.baslik}" kaydı için ne yapmak istersiniz?`,
-      [
-        { text: "Düzenle", onPress: () => duzenleBaslat(item) },
-        { text: "Sil", style: "destructive", onPress: () => silmeOnayi(item.id) },
-        { text: "Vazgeç", style: "cancel" }
-      ]
-    );
+    Alert.alert("İşlem Seçin", `"${item.baslik}" kaydı için ne yapmak istersiniz?`, [
+      { text: "Düzenle", onPress: () => duzenleBaslat(item) },
+      { text: "Sil", style: "destructive", onPress: () => silmeOnayi(item.id) },
+      { text: "Vazgeç", style: "cancel" }
+    ]);
   };
 
   const silmeOnayi = (id: string) => {
@@ -145,12 +123,13 @@ export default function HomeScreen() {
     ]);
   };
 
+  const gosterilecekHarcamalar = harcamalar.filter(islem => {
+    if (aktifFiltre === 'hepsi') return true;
+    return islem.tip === aktifFiltre;
+  });
+
   const renderItem = ({ item }: { item: Harcama }) => (
-    <TouchableOpacity
-      style={styles.harcamaKarti}
-      onLongPress={() => islemSecenekleri(item)}
-      activeOpacity={0.7}
-    >
+    <TouchableOpacity style={styles.harcamaKarti} onLongPress={() => islemSecenekleri(item)} activeOpacity={0.7}>
       <Text style={styles.harcamaBaslik}>{item.baslik}</Text>
       <Text style={[styles.harcamaTutar, { color: item.tip === 'gelir' ? '#27ae60' : '#e74c3c' }]}>
         {item.tip === 'gelir' ? '+' : '-'}{item.tutar} ₺
@@ -176,9 +155,26 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      <View style={styles.filtreAlani}>
+        <TouchableOpacity style={[styles.filtreButonu, aktifFiltre === 'hepsi' && styles.filtreAktif]} onPress={() => setAktifFiltre('hepsi')}>
+          <Text style={[styles.filtreMetni, aktifFiltre === 'hepsi' && styles.filtreMetniAktif]}>Tümü</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.filtreButonu, aktifFiltre === 'gelir' && styles.filtreAktif]} onPress={() => setAktifFiltre('gelir')}>
+          <Text style={[styles.filtreMetni, aktifFiltre === 'gelir' && styles.filtreMetniAktif]}>Gelirler</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.filtreButonu, aktifFiltre === 'gider' && styles.filtreAktif]} onPress={() => setAktifFiltre('gider')}>
+          <Text style={[styles.filtreMetni, aktifFiltre === 'gider' && styles.filtreMetniAktif]}>Giderler</Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.listeAlani}>
-        <Text style={styles.listeBaslik}>Son İşlemler (Düzenlemek/Silmek için basılı tutun)</Text>
-        <FlatList data={harcamalar} renderItem={renderItem} keyExtractor={item => item.id} ListEmptyComponent={<Text style={styles.bosListeYazisi}>Henüz bir işlem yok.</Text>} />
+        <FlatList
+          data={gosterilecekHarcamalar}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          ListEmptyComponent={<Text style={styles.bosListeYazisi}>Bu kategoride işlem bulunmuyor.</Text>}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
 
       <TouchableOpacity style={styles.eklemeButonu} onPress={() => setModalGorunur(true)}>
@@ -219,12 +215,16 @@ const styles = StyleSheet.create({
   bakiyeKarti: { backgroundColor: '#2f3640', marginHorizontal: 20, marginTop: 10, marginBottom: 15, padding: 25, borderRadius: 15, alignItems: 'center', elevation: 5 },
   bakiyeBaslik: { color: '#dcdde1', fontSize: 14, marginBottom: 5 },
   bakiyeMiktar: { fontSize: 32, fontWeight: 'bold' },
-  ozetAlani: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 20 },
+  ozetAlani: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 15 },
   ozetKarti: { backgroundColor: '#fff', flex: 1, padding: 15, borderRadius: 10, marginHorizontal: 5, alignItems: 'center', elevation: 2 },
   ozetBaslik: { fontSize: 12, color: '#7f8c8d', marginBottom: 5, fontWeight: 'bold' },
   ozetMiktar: { fontSize: 16, fontWeight: 'bold' },
+  filtreAlani: { flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 20, marginBottom: 15 },
+  filtreButonu: { paddingVertical: 8, paddingHorizontal: 15, borderRadius: 20, backgroundColor: '#dcdde1', marginHorizontal: 5 },
+  filtreAktif: { backgroundColor: '#2f3640' },
+  filtreMetni: { fontSize: 13, fontWeight: 'bold', color: '#7f8c8d' },
+  filtreMetniAktif: { color: '#fff' },
   listeAlani: { flex: 1, paddingHorizontal: 20 },
-  listeBaslik: { fontSize: 14, fontWeight: 'bold', color: '#2f3640', marginBottom: 15 },
   harcamaKarti: { backgroundColor: '#fff', padding: 20, borderRadius: 10, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, elevation: 3 },
   harcamaBaslik: { fontSize: 16, color: '#2f3640' },
   harcamaTutar: { fontSize: 16, fontWeight: 'bold' },

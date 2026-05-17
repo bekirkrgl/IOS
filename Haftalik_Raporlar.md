@@ -69,3 +69,14 @@ Bu hafta, proje planında belirtildiği üzere uygulamanın kullanıcı deneyimi
 
 **İlerleme Videom (YouTube):**
 👉 [https://youtu.be/9VfXmdV6FVE]
+
+## 10. Hafta: Veri Filtreleme, Final Testleri ve Proje Teslimi
+Projenin son haftasında, veri yönetimini daha fonksiyonel hale getirecek son özellik entegre edilmiş ve uygulamanın genel testleri tamamlanarak süreç noktalanmıştır.
+
+* **Dinamik Veri Filtreleme:** Arayüze "Tümü", "Gelirler" ve "Giderler" olmak üzere üç sekmeli bir filtreleme algoritması eklendi. Listeyi doğrudan ekrana basmak yerine, JavaScript'in `filter` metodu kullanılarak kullanıcının seçimine göre sadece ilgili tipteki verilerin `FlatList` üzerinden akıcı bir şekilde render edilmesi sağlandı.
+* **Final Testleri:** Form validasyonları, AsyncStorage senkronizasyonu ve genel UI tepkileri son kez test edilerek tespit edilen ufak görsel pürüzler giderildi.
+
+Başlangıç planına tam sadık kalınarak, hatta ekstra özellikler (Update mekanizması vb.) eklenerek yürütülen 10 haftalık geliştirme sürecimiz başarıyla tamamlanmıştır.
+
+**Final İlerleme Videom (YouTube):**
+👉 [https://youtu.be/PZSjJWLOtKo]
